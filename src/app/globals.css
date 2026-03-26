@@ -1,0 +1,191 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* ── Fonts ─────────────────────────────────────── */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+  --font-sans:    var(--font-body);
+  --font-mono:    ui-monospace, 'Cascadia Code', monospace;
+
+  /* ── Brand colours ─────────────────────────────── */
+  --color-cream-50:  #FDFCFA;
+  --color-cream-100: #F7F5F0;
+  --color-cream-200: #EEE9E0;
+  --color-cream-300: #E0D9CE;
+
+  --color-navy-600:  #253A5E;
+  --color-navy-700:  #1A2B4A;
+  --color-navy-800:  #142240;
+  --color-navy-900:  #0D1829;
+
+  --color-coral-300: #F5A080;
+  --color-coral-400: #F07B55;
+  --color-coral-500: #E87040;
+  --color-coral-600: #D4612E;
+  --color-coral-700: #B5511F;
+
+  --color-edu-blue-300: #87BAE4;
+  --color-edu-blue-400: #5B9BD5;
+  --color-edu-blue-500: #2D7DD2;
+  --color-edu-blue-600: #1A5FA8;
+
+  /* ── shadcn token bridge ─────────────────────────── */
+  --color-background:              var(--background);
+  --color-foreground:              var(--foreground);
+  --color-card:                    var(--card);
+  --color-card-foreground:         var(--card-foreground);
+  --color-popover:                 var(--popover);
+  --color-popover-foreground:      var(--popover-foreground);
+  --color-primary:                 var(--primary);
+  --color-primary-foreground:      var(--primary-foreground);
+  --color-secondary:               var(--secondary);
+  --color-secondary-foreground:    var(--secondary-foreground);
+  --color-muted:                   var(--muted);
+  --color-muted-foreground:        var(--muted-foreground);
+  --color-accent:                  var(--accent);
+  --color-accent-foreground:       var(--accent-foreground);
+  --color-destructive:             var(--destructive);
+  --color-border:                  var(--border);
+  --color-input:                   var(--input);
+  --color-ring:                    var(--ring);
+  --color-sidebar:                 var(--sidebar);
+  --color-sidebar-foreground:      var(--sidebar-foreground);
+  --color-sidebar-primary:         var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent:          var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border:          var(--sidebar-border);
+  --color-sidebar-ring:            var(--sidebar-ring);
+
+  /* ── Radius (shadcn calc-based — do not change) ── */
+  --radius-sm:  calc(var(--radius) * 0.6);
+  --radius-md:  calc(var(--radius) * 0.8);
+  --radius-lg:  var(--radius);
+  --radius-xl:  calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* ── Shadow theme tokens ─────────────────────────── */
+  --shadow-card:       0 1px 3px 0 rgba(26,43,74,0.07), 0 1px 2px -1px rgba(26,43,74,0.05);
+  --shadow-card-hover: 0 4px 12px -2px rgba(26,43,74,0.10), 0 2px 6px -2px rgba(26,43,74,0.06);
+  --shadow-md:         0 4px 12px -2px rgba(26,43,74,0.12), 0 2px 6px -2px rgba(26,43,74,0.08);
+  --shadow-lg:         0 10px 24px -4px rgba(26,43,74,0.14), 0 4px 10px -4px rgba(26,43,74,0.08);
+  --shadow-xl:         0 20px 40px -8px rgba(26,43,74,0.18);
+}
+
+/* ═══════════════════════════════════════════════════
+   CSS CUSTOM PROPERTIES  (:root)
+═══════════════════════════════════════════════════ */
+:root {
+  /* ── Core shadcn palette ─────────────────────────── */
+  --background:         #F7F5F0;
+  --foreground:         #1A2B4A;
+  --card:               #FFFFFF;
+  --card-foreground:    #1A2B4A;
+  --popover:            #FFFFFF;
+  --popover-foreground: #1A2B4A;
+  --primary:            #E87040;
+  --primary-foreground: #FFFFFF;
+  --secondary:          #EEE9E0;
+  --secondary-foreground: #1A2B4A;
+  --muted:              #EEE9E0;
+  --muted-foreground:   #6B7787;
+  --accent:             #F0EBE3;
+  --accent-foreground:  #1A2B4A;
+  --destructive:        #DC2626;
+  --border:             #E5E0D8;
+  --input:              #E5E0D8;
+  --ring:               #E87040;
+  --radius:             0.875rem;
+
+  /* ── Sidebar ─────────────────────────────────────── */
+  --sidebar:                    #142240;
+  --sidebar-foreground:         #FFFFFF;
+  --sidebar-primary:            #E87040;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent:             #1A2B4A;
+  --sidebar-accent-foreground:  #FFFFFF;
+  --sidebar-border:             rgba(255,255,255,0.08);
+  --sidebar-ring:               #E87040;
+
+  /* ── Transitions ─────────────────────────────────── */
+  --duration-fast:   120ms;
+  --duration-normal: 200ms;
+  --ease-smooth:     cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring:     cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ═══════════════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════════════ */
+@layer base {
+  *, *::before, *::after {
+    @apply border-border outline-ring/50;
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.6;
+    @apply bg-background text-foreground;
+    min-height: 100dvh;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  input, textarea, select {
+    font-family: var(--font-body);
+  }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(26,43,74,0.12);
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(26,43,74,0.22);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════════════════ */
+@layer utilities {
+  .font-display { font-family: var(--font-display); }
+  .font-body    { font-family: var(--font-body); }
+
+  /* CEFR badge colours */
+  .badge-a1 { @apply bg-emerald-50 text-emerald-700; }
+  .badge-a2 { @apply bg-teal-50    text-teal-700;    }
+  .badge-b1 { @apply bg-sky-50     text-sky-700;     }
+  .badge-b2 { @apply bg-violet-50  text-violet-700;  }
+  .badge-c1 { @apply bg-amber-50   text-amber-700;   }
+  .badge-c2 { @apply bg-rose-50    text-rose-700;    }
+
+  /* Glass effect */
+  .glass {
+    background: rgba(255,255,255,0.80);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+  }
+}

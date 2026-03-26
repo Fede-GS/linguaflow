@@ -1,0 +1,233 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── INSEGNANTI ───────────────────────────────────
+model Teacher {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  language     String   @default("it")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  students     Student[]
+  exercises    Exercise[]
+  blocks       ExerciseBlock[]
+  appointments Appointment[]
+}
+
+// ─── STUDENTI ─────────────────────────────────────
+model Student {
+  id                 String    @id @default(cuid())
+  teacherId          String
+  teacher            Teacher   @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  name               String
+  email              String?
+  phone              String?
+  nativeLanguage     String    @default("it")
+  targetLanguage     String    @default("english")
+  currentLevel       CefrLevel
+  targetLevel        CefrLevel
+  goal               String?
+  notes              String?
+  isActive           Boolean   @default(true)
+  // Valutazione competenze iniziali (0-10)
+  readingScore       Int       @default(0)
+  writingScore       Int       @default(0)
+  listeningScore     Int       @default(0)
+  speakingScore      Int       @default(0)
+  grammarScore       Int       @default(0)
+  vocabularyScore    Int       @default(0)
+  // Profilo apprendimento
+  learningStyle      String?
+  studyHoursPerWeek  Int?
+  previousExperience String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  // Student login
+  accessCode              String?   @unique
+  // Teacher-updated current scores (0-10)
+  currentReadingScore     Int       @default(0)
+  currentWritingScore     Int       @default(0)
+  currentListeningScore   Int       @default(0)
+  currentSpeakingScore    Int       @default(0)
+  currentGrammarScore     Int       @default(0)
+  currentVocabularyScore  Int       @default(0)
+
+  assignments  Assignment[]
+  blocks       ExerciseBlock[]
+  appointments Appointment[]
+}
+
+// ─── ESERCIZI ─────────────────────────────────────
+model Exercise {
+  id               String       @id @default(cuid())
+  teacherId        String
+  teacher          Teacher      @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  title            String
+  description      String?
+  type             ExerciseType
+  targetLanguage   String       @default("english")
+  cefrLevel        CefrLevel
+  skillFocus       SkillFocus
+  topic            String?
+  estimatedMinutes Int          @default(15)
+  tags             String[]
+  content          Json
+  answerKey        Json?
+  aiGenerated      Boolean      @default(false)
+  aiPromptUsed     String?
+  geminiModel      String?
+  isTemplate       Boolean      @default(false)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  assignments Assignment[]
+  blockItems  BlockItem[]
+}
+
+// ─── BLOCCHI DI ESERCIZI ──────────────────────────
+model ExerciseBlock {
+  id        String      @id @default(cuid())
+  teacherId String
+  teacher   Teacher     @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  studentId String
+  student   Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  title     String
+  topics    String[]
+  comments  String?
+  dueDate   DateTime?
+  status    BlockStatus @default(ASSIGNED)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  items BlockItem[]
+}
+
+// ─── ELEMENTI DEL BLOCCO ──────────────────────────
+model BlockItem {
+  id               String           @id @default(cuid())
+  blockId          String
+  block            ExerciseBlock    @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  exerciseId       String
+  exercise         Exercise         @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  order            Int              @default(0)
+  topicLabel       String?
+  status           AssignmentStatus @default(ASSIGNED)
+  studentAnswers   Json?
+  submittedAt      DateTime?
+  timeSpentSeconds Int?
+  autoScore        Float?
+  teacherScore     Float?
+  teacherFeedback  String?
+  aiFeedbackDraft  String?
+  teacherNotes     String?
+}
+
+// ─── ASSEGNAZIONI (legacy) ────────────────────────
+model Assignment {
+  id               String           @id @default(cuid())
+  exerciseId       String
+  exercise         Exercise         @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  studentId        String
+  student          Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  status           AssignmentStatus @default(ASSIGNED)
+  dueDate          DateTime?
+  assignedAt       DateTime         @default(now())
+  studentAnswers   Json?
+  submittedAt      DateTime?
+  timeSpentSeconds Int?
+  autoScore        Float?
+  teacherScore     Float?
+  teacherFeedback  String?
+  aiFeedbackDraft  String?
+  gradedAt         DateTime?
+  returnedAt       DateTime?
+}
+
+// ─── APPUNTAMENTI ─────────────────────────────────
+model Appointment {
+  id           String            @id @default(cuid())
+  teacherId    String
+  teacher      Teacher           @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  studentId    String
+  student      Student           @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  title        String
+  description  String?
+  startTime    DateTime
+  endTime      DateTime
+  status       AppointmentStatus @default(PENDING)
+  proposedBy   String            @default("teacher")
+  teacherNotes String?
+  location     String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+}
+
+// ─── ENUM ─────────────────────────────────────────
+enum CefrLevel {
+  A1
+  A2
+  B1
+  B2
+  C1
+  C2
+}
+
+enum ExerciseType {
+  FILL_BLANK
+  MULTIPLE_CHOICE
+  MATCHING
+  REORDER
+  CLOZE
+  TRUE_FALSE
+  SHORT_ANSWER
+  ESSAY
+  READING_COMP
+  LISTENING_COMP
+  DIALOGUE_COMPLETE
+  ERROR_CORRECTION
+  WORD_FORMATION
+  TRANSLATION
+  DICTATION
+  CONVERSATION_SIM
+}
+
+enum SkillFocus {
+  READING
+  WRITING
+  LISTENING
+  SPEAKING
+  GRAMMAR
+  VOCABULARY
+}
+
+enum AssignmentStatus {
+  ASSIGNED
+  IN_PROGRESS
+  SUBMITTED
+  GRADED
+  RETURNED
+}
+
+enum BlockStatus {
+  ASSIGNED
+  IN_PROGRESS
+  COMPLETED
+  GRADED
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  CHANGE_REQUESTED
+}
