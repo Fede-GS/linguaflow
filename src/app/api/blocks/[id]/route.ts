@@ -32,6 +32,22 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const { id } = await params
   const body = await req.json()
 
+  // Add a single item to existing block
+  if (body.addItem) {
+    const { exerciseId, topicLabel } = body.addItem as { exerciseId: string; topicLabel?: string }
+    const existing = await prisma.blockItem.count({ where: { blockId: id } })
+    const item = await prisma.blockItem.create({
+      data: {
+        blockId: id,
+        exerciseId,
+        order: existing,
+        topicLabel: topicLabel ?? null,
+        status: 'ASSIGNED',
+      },
+    })
+    return NextResponse.json(item)
+  }
+
   const block = await prisma.exerciseBlock.update({
     where: { id },
     data: {

@@ -2,6 +2,7 @@ import { Bell } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { getInitials } from '@/lib/utils'
 import { getSession } from '@/lib/auth'
+import { LanguageSwitcher } from './LanguageSwitcher'
 
 export async function Header() {
   const session = await getSession()
@@ -21,10 +22,16 @@ export async function Header() {
 
       {/* Right: actions */}
       <div className="flex items-center gap-2">
+        {/* Language toggle */}
+        <LanguageSwitcher />
+
+        {/* Divider */}
+        <div className="w-px h-5 bg-cream-200 mx-1" />
+
         {/* Notification bell */}
         <button
           className="relative p-2 rounded-xl hover:bg-cream-200/60 transition-colors duration-150 text-navy-700/50 hover:text-navy-700"
-          aria-label="Notifiche"
+          aria-label="Notifications"
         >
           <Bell className="w-5 h-5" />
         </button>

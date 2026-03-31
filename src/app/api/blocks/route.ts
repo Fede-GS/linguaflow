@@ -2,12 +2,15 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const session = await getSession()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const { searchParams } = new URL(req.url)
+  const studentId = searchParams.get('studentId')
+
   const blocks = await prisma.exerciseBlock.findMany({
-    where: { teacherId: session.id },
+    where: { teacherId: session.id, ...(studentId ? { studentId } : {}) },
     include: {
       student: { select: { id: true, name: true, currentLevel: true } },
       items: {

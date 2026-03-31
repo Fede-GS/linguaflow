@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   BookOpen,
   LayoutDashboard,
@@ -14,19 +14,21 @@ import {
   CalendarDays,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-
-const navItems = [
-  { href: '/',            label: 'Dashboard',              icon: LayoutDashboard, exact: true },
-  { href: '/students',    label: 'Studenti',               icon: Users },
-  { href: '/blocks/new',  label: 'Crea esercizi e blocchi', icon: Sparkles, badge: 'AI' },
-  { href: '/assignments', label: 'Esercizi assegnati',      icon: ClipboardCheck },
-  { href: '/exercises',   label: 'Libreria esercizi',        icon: Library },
-  { href: '/calendar',    label: 'Calendario lezioni',       icon: CalendarDays },
-]
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
+  const { t } = useLanguage()
+
+  const navItems = [
+    { href: '/',            label: t.nav.dashboard,        icon: LayoutDashboard, exact: true },
+    { href: '/students',    label: t.nav.students,         icon: Users },
+    { href: '/blocks/new',  label: t.nav.createExercises,  icon: Sparkles, badge: 'AI' },
+    { href: '/assignments', label: t.nav.assignments,       icon: ClipboardCheck },
+    { href: '/exercises',   label: t.nav.library,           icon: Library },
+    { href: '/calendar',    label: t.nav.calendar,          icon: CalendarDays },
+  ]
 
   async function handleLogout() {
     await fetch('/api/auth/logout', { method: 'POST' })
@@ -59,7 +61,7 @@ export function Sidebar() {
       {/* ── Navigation ───────────────────────────────── */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
         <p className="text-[10px] font-semibold uppercase tracking-widest text-white/25 px-3 mb-3">
-          Menu
+          {t.nav.menu}
         </p>
         {navItems.map((item) => {
           const Icon = item.icon
@@ -114,7 +116,7 @@ export function Sidebar() {
           className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium text-white/35 hover:text-white hover:bg-white/[0.07] transition-colors duration-150"
         >
           <LogOut className="w-4 h-4" />
-          <span>Esci</span>
+          <span>{t.nav.logout}</span>
         </button>
       </div>
     </aside>
